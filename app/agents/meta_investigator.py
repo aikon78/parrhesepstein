@@ -6,7 +6,7 @@ Trova contraddizioni, punti in comune e lancia nuove ricerche per risolverle.
 import re
 import json
 import requests
-from anthropic import Anthropic
+from app.services.claude import create_ai_client
 from app.services.justice_gov import search_justice_gov
 from app.services.pdf import download_pdf_text
 
@@ -41,8 +41,8 @@ def get_document_content(doc_id, snippets=None):
 class MetaInvestigator:
     """Analizza investigazioni salvate e risolve contraddizioni"""
 
-    def __init__(self, api_key, progress_callback=None, model="claude-sonnet-4-20250514", lang_instruction="", base_url=None):
-        self.client = Anthropic(api_key=api_key, base_url=base_url) if base_url else Anthropic(api_key=api_key)
+    def __init__(self, api_key, progress_callback=None, model="claude-sonnet-4-20250514", lang_instruction="", base_url=None, provider="claude"):
+        self.client = create_ai_client(api_key=api_key, base_url=base_url, provider=provider)
         self.progress_callback = progress_callback or (lambda x: print(f"[META] {x}"))
         self.model = model
         self.lang_instruction = lang_instruction
@@ -398,7 +398,7 @@ Se una persona è solo menzionata da altri, scrivi: "Non c'è prova che X abbia 
 
 
 def run_meta_investigation(investigations, api_key, progress_callback=None,
-                           model="claude-sonnet-4-20250514", lang_instruction="", base_url=None):
+                           model="claude-sonnet-4-20250514", lang_instruction="", base_url=None, provider="claude"):
     """Funzione principale per eseguire una meta-investigazione"""
-    investigator = MetaInvestigator(api_key, progress_callback, model=model, lang_instruction=lang_instruction, base_url=base_url)
+    investigator = MetaInvestigator(api_key, progress_callback, model=model, lang_instruction=lang_instruction, base_url=base_url, provider=provider)
     return investigator.investigate(investigations)

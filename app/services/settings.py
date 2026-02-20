@@ -9,7 +9,7 @@ _settings_cache_time = 0
 
 
 def get_app_settings():
-    """Ritorna {model, language, base_url} con cache 60s"""
+    """Ritorna {provider, model, language, base_url} con cache 60s"""
     global _settings_cache, _settings_cache_time
     now = time.time()
     if _settings_cache and (now - _settings_cache_time) < 60:
@@ -17,6 +17,7 @@ def get_app_settings():
     doc = app_settings_collection.find_one({"_id": "global"})
     key_data = db_settings["api_keys"].find_one({"service": "claude"})
     _settings_cache = {
+        "provider": doc.get("provider", "claude") if doc else "claude",
         "model": doc.get("model", "claude-sonnet-4-20250514") if doc else "claude-sonnet-4-20250514",
         "language": doc.get("language", "Italiano") if doc else "Italiano",
         "base_url": key_data.get("base_url", "") if key_data else "",
@@ -27,6 +28,10 @@ def get_app_settings():
 
 def get_model():
     return get_app_settings()["model"]
+
+
+def get_provider():
+    return get_app_settings()["provider"]
 
 
 def get_language():

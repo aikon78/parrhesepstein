@@ -14,4 +14,6 @@ from app import create_app
 application = create_app()
 
 if __name__ == '__main__':
-    application.run(debug=True, port=5001, threaded=True)
+    host = os.getenv("HOST", "0.0.0.0")
+    port = int(os.getenv("PORT", "5001"))
+    application.run(debug=True, host=host, port=port, threaded=True)

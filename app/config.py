@@ -18,7 +18,7 @@ FLIGHTS_JSON = os.path.join(BASE_DIR, "epstein_flights_data.json")
 
 SECRET_KEY = "epstein-files-analyzer-secret-key"
 
-MONGO_URI = "mongodb://localhost:27017/"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 DB_SETTINGS_NAME = "SnareSetting"
 DB_EPSTEIN_NAME = "EpsteinAnalyses"
 

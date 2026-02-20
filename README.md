@@ -188,38 +188,43 @@ parrhesepstein/
 
 ## Installation
 
+### Dev Container (recommended)
+
+The project includes a ready-to-use Dev Container with Docker Compose in `.devcontainer/devcontainer.json`.
+MongoDB is started automatically as a companion service.
+
 ### Prerequisites
 
-- Python 3.11+
-- MongoDB (running on `localhost:27017`)
-- Tesseract OCR (optional, for scanned PDFs)
-- Poppler (optional, for PDF-to-image conversion)
-- An Anthropic API key (Claude)
+- Docker
+- VS Code + Dev Containers extension
 
-### Steps
+### Steps (Dev Container)
 
 ```bash
 # Clone the repository
 git clone https://github.com/Pinperepette/parrhesepstein.git
 cd parrhesepstein
-
-# Create virtual environment
-python -m venv venv
-source venv/bin/activate  # Linux/macOS
-# venv\Scripts\activate   # Windows
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Install system dependencies (macOS)
-brew install tesseract poppler
-
-# Install system dependencies (Ubuntu/Debian)
-# sudo apt-get install tesseract-ocr poppler-utils
-
-# Ensure MongoDB is running
-mongosh --eval "db.runCommand({ping: 1})"
 ```
+
+Then in VS Code:
+
+1. `Dev Containers: Reopen in Container`
+2. Wait for `postCreateCommand` to complete (system packages + Python dependencies)
+3. Start app with:
+
+```bash
+make build-run
+```
+
+This command creates `.venv`, installs all dependencies from `requirements.txt`, and starts the app on `http://localhost:5001`.
+
+### Additional runtime prerequisites
+
+- Anthropic API key (configured via `/settings`)
+
+MongoDB note:
+- Inside Dev Container: automatic service (`mongodb:27017`)
+- Outside Dev Container: run MongoDB locally on `localhost:27017`
 
 ### Data Files
 
@@ -239,7 +244,7 @@ Both are optional. The app functions without them but the Flights and Email page
 All configuration lives in `app/config.py`:
 
 ```python
-MONGO_URI = "mongodb://localhost:27017/"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 DB_EPSTEIN_NAME = "EpsteinAnalyses"       # Main database
 DB_SETTINGS_NAME = "SnareSetting"          # API key storage
 
@@ -264,6 +269,27 @@ The Claude API key is configured through the Settings page (`/settings`) and sto
 ---
 
 ## Running
+
+### Dev Container run flow
+
+```bash
+make build-run
+```
+
+Inside the Dev Container, this is the standard flow: build (if needed) and run in one step.
+
+If you use VS Code, you can run the default build task:
+
+- `Terminal` → `Run Build Task...`
+- Select `Build & Run Parrhesepstein`
+
+MongoDB connectivity check:
+
+```bash
+make mongo-check
+```
+
+Manual run (if dependencies are already installed):
 
 ```bash
 python app/run.py

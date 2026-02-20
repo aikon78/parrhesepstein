@@ -1,6 +1,14 @@
 """
 Parrhesepstein — App factory - Tamaladissa.
 """
+import sys
+
+try:
+    import pysqlite3  # type: ignore
+    sys.modules["sqlite3"] = pysqlite3
+except ImportError:
+    pass
+
 from flask import Flask
 from flask_cors import CORS
 from app.config import SECRET_KEY

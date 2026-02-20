@@ -1,0 +1,19 @@
+{
+  "name": "Parrhesepstein Dev Container",
+  "dockerComposeFile": "docker-compose.yml",
+  "service": "app",
+  "runServices": ["mongodb"],
+  "workspaceFolder": "/workspaces/parrhesepstein",
+  "forwardPorts": [5001, 27017],
+  "remoteEnv": {
+    "MONGO_URI": "mongodb://mongodb:27017/"
+  },
+  "postCreateCommand": "sudo apt-get update && sudo apt-get install -y --no-install-recommends tesseract-ocr poppler-utils && make build",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "python.defaultInterpreterPath": "/workspaces/parrhesepstein/.venv/bin/python"
+      }
+    }
+  }
+}
